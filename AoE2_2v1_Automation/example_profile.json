@@ -1,0 +1,276 @@
+{
+    "players": {
+        "0": {
+            "name": "AI",
+            "side": "Defendant",
+            "id": "ai",
+            "colour": "Cyan"
+        },
+        "1": {
+            "name": "MrKirby",
+            "side": "Challenger",
+            "id": "default",
+            "colour": "Green"
+        }
+    },
+    "maps": {
+        "0": "r",
+        "1": "u",
+        "2": "n",
+        "3": "e",
+        "4": "s",
+        "5": "t",
+        "6": "o",
+        "7": "n",
+        "8": "e",
+        "9": "s"
+    },
+    "points": {},
+    "civs": {
+        "options": [
+            "goths"
+        ],
+        "choiceIndex": 0
+    },
+    "challenges": {
+        "collection": [
+            {
+                "name": "Delete starting scout",
+                "points": 4,
+                "id": "delete_starting_scout",
+                "classes": [
+                    "instant"
+                ]
+            },
+            {
+                "name": "Delete starting vills",
+                "display": "Delete {0} starting vills",
+                "points": {
+                    "2": 8,
+                    "3": 12
+                },
+                "classes": [
+                    "instant"
+                ],
+                "dev-desc": "VS instant 8 houses, -2 vills == -4 @ 20. -3 vills == -7 @ 20",
+                "id": "delete_starting_vills",
+                "selectedOption": "3"
+            },
+            {
+                "name": "No loom",
+                "points": 8,
+                "id": "no_loom",
+                "classes": [
+                    "instant"
+                ]
+            },
+            {
+                "name": "Make n houses",
+                "display": "Make {0} houses",
+                "points": {
+                    "15": 4,
+                    "20": 6
+                },
+                "id": "make_n_houses",
+                "classes": [
+                    "dark"
+                ],
+                "civs": [
+                    "britons",
+                    "byzantines",
+                    "celts",
+                    "chinese",
+                    "franks",
+                    "goths",
+                    "japanese",
+                    "mongols",
+                    "persians",
+                    "saracens",
+                    "teutons",
+                    "turks",
+                    "vikings",
+                    "aztecs",
+                    "koreans",
+                    "mayans",
+                    "spanish",
+                    "incas",
+                    "indians",
+                    "italians",
+                    "magyars",
+                    "slavs",
+                    "berbers",
+                    "ethiopians",
+                    "malians",
+                    "portuguese",
+                    "burmese",
+                    "khmer",
+                    "malay",
+                    "vietnamese",
+                    "bulgarians",
+                    "cumans",
+                    "lithuanians",
+                    "tatars",
+                    "burgundians",
+                    "sicilians",
+                    "bohemians",
+                    "poles"
+                ],
+                "selectedOption": "20"
+            },
+            {
+                "name": "Make n archers",
+                "display": "Make {0} archers",
+                "points": {
+                    "6": 2,
+                    "12": 4
+                },
+                "id": "make_archers",
+                "classes": [
+                    "feudal"
+                ],
+                "selectedOption": "6"
+            },
+            {
+                "name": "Sacrifice 10 monks",
+                "points": 8,
+                "id": "sacrifice_10_monks",
+                "classes": [
+                    "castle"
+                ]
+            },
+            {
+                "name": "Leave gaps between walls",
+                "points": 6,
+                "classes": [
+                    "game-changing"
+                ],
+                "id": "leave_gaps_between_walls"
+            },
+            {
+                "name": "No trash units",
+                "points": 10,
+                "id": "no_trash",
+                "classes": [
+                    "game-changing"
+                ]
+            },
+            {
+                "name": "No walls",
+                "points": 8,
+                "id": "no_walls",
+                "classes": [
+                    "game-changing"
+                ]
+            },
+            {
+                "name": "No archer range & attack",
+                "points": 10,
+                "id": "no_archer_attack"
+            },
+            {
+                "name": "No bloodlines",
+                "points": 4,
+                "id": "no_bloodlines",
+                "civs": [
+                    "chinese",
+                    "goths",
+                    "japanese",
+                    "mongols",
+                    "persians",
+                    "saracens",
+                    "teutons",
+                    "turks",
+                    "huns",
+                    "spanish",
+                    "indians",
+                    "italians",
+                    "magyars",
+                    "slavs",
+                    "berbers",
+                    "malians",
+                    "portuguese",
+                    "burmese",
+                    "khmer",
+                    "vietnamese",
+                    "cumans",
+                    "lithuanians",
+                    "tatars",
+                    "burgundians",
+                    "sicilians",
+                    "poles"
+                ]
+            },
+            {
+                "name": "No cavalry defence",
+                "points": 8,
+                "id": "no_cavalry_defence",
+                "civs": [
+                    "britons",
+                    "byzantines",
+                    "celts",
+                    "chinese",
+                    "franks",
+                    "goths",
+                    "japanese",
+                    "mongols",
+                    "persians",
+                    "saracens",
+                    "teutons",
+                    "turks",
+                    "vikings",
+                    "huns",
+                    "koreans",
+                    "spanish",
+                    "indians",
+                    "italians",
+                    "magyars",
+                    "slavs",
+                    "berbers",
+                    "ethiopians",
+                    "malians",
+                    "portuguese",
+                    "burmese",
+                    "khmer",
+                    "malay",
+                    "vietnamese",
+                    "bulgarians",
+                    "cumans",
+                    "lithuanians",
+                    "tatars",
+                    "burgundians",
+                    "sicilians",
+                    "bohemians",
+                    "poles"
+                ]
+            },
+            {
+                "name": "No forage bush",
+                "points": 2,
+                "id": "no_forage_bush"
+            },
+            {
+                "name": "No relics",
+                "points": 1,
+                "id": "no_relics"
+            },
+            {
+                "name": "No unique castle unit",
+                "points": 2,
+                "id": "no_uu"
+            }
+        ],
+        "options": {
+            "options": [],
+            "choiceIndex": -1
+        },
+        "quantity": 3
+    },
+    "commands": {
+        "collection": [],
+        "options": {
+            "options": [],
+            "choiceIndex": -1
+        },
+        "quantity": 0
+    }
+}

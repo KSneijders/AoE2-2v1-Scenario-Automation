@@ -1,6 +1,22 @@
+from typing import List
+
 from AoE2ScenarioParser.datasets.buildings import BuildingInfo
 from AoE2ScenarioParser.datasets.techs import TechInfo
 from AoE2ScenarioParser.datasets.units import UnitInfo
+from AoE2ScenarioParser.objects.data_objects.player import Player
+from AoE2ScenarioParser.objects.managers.de.trigger_manager_de import TriggerManagerDE
+from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
+
+
+def handle_simple_disables(scenario: AoE2DEScenario, player: Player, ids: List[str]):
+    for id_ in ids:
+        if id_ in simple_disables.keys():
+            for type_, list_or_item in simple_disables[id_].items():
+                if isinstance(list_or_item, list):
+                    getattr(player, f"disabled_{type_}").extend(list_or_item)
+                else:
+                    getattr(player, f"disabled_{type_}").append(list_or_item)
+
 
 simple_disables = {
     'no_mining_camps': {
@@ -379,7 +395,6 @@ simple_disables = {
     'no_ballistics': {'techs': TechInfo.BALLISTICS.ID},
     'no_loom': {'techs': TechInfo.LOOM.ID},
 }
-
 # no_mills
 # no_extra_tcs
 # no_selling_buying
