@@ -123,7 +123,7 @@ simple_disables = {
                 TechInfo.IMPERIAL_CAMEL_RIDER.ID,
                 TechInfo.ELITE_BATTLE_ELEPHANT.ID,
                 TechInfo.ELITE_STEPPE_LANCER.ID,
-            ] + [uuu.ID for uuu in TechInfo.unique_unit_upgrades()]
+            ] + [uuu.ID for uuu in TechInfo.unique_unit_upgrades() if uuu != TechInfo.ELITE_GENITOUR]
     },
     'no_trash': {
         # Todo: Add triggers TO DISABLE these.

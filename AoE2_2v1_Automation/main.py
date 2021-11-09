@@ -17,6 +17,9 @@ tm, um, mm, xm, pm = scenario.trigger_manager, scenario.unit_manager, scenario.m
 for p in pm.players:
     p.color = ColorId.GRAY
 
+# Todo: Add Civs
+# Todo: Add Diplo settings
+
 players_nums = list(range(1, len(base64_encoded) + 1))
 random.shuffle(players_nums)
 player_map: Dict = {k: -1 for k in players_nums}
