@@ -1,18 +1,17 @@
 import base64
 import json
 import random
-from typing import Dict, List, Set
+from typing import Dict
 
 from bidict import bidict
 
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation import extra_disables
 from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.civs import get_civ
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.disable_structure import Disables
 from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.encoded_strings import base64_encoded
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.extra_disables import ExtraInstantDisables
 from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.intstants import handle_instants
 from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.simple_disables import handle_simple_disables
 from AoE2ScenarioParser.datasets.players import PlayerId, ColorId
-from AoE2ScenarioParser.helper.pretty_format import pretty_format_list
+from AoE2ScenarioParser.helper.pretty_format import pretty_format_list, pretty_format_dict
 from AoE2ScenarioParser.local_config import folder_2v1, folder_de
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
@@ -29,8 +28,6 @@ players_nums = list(range(1, len(base64_encoded) + 1))
 # random.shuffle(players_nums)
 player_map: bidict = bidict()
 """Maps Player ID to their colour"""
-extra_disables.extra_instant_disables = {k: [] for k in players_nums}
-"""Used for challenges. Keeps track of what should get disabled at the start but can also be re-enabled afterwards"""
 
 colour_map: Dict = {
     'blue': PlayerId.ONE,
@@ -74,28 +71,37 @@ for index, encoded_settings in enumerate(base64_encoded):
     # player_object.lock_civ = True
 
     if this_side == "Challenger":
-        ids: List[str] = [c['id'] for c in profile_settings['challenges']['collection']]
+        ids: Dict[str, Dict] = {c['id']: c for c in profile_settings['challenges']['collection']}
+        print(pretty_format_dict(ids))
 
         # SIMPLE DISABLES HAS TO BE EXECUTED FIRST!
         # For keeping track of what was already disabled. So triggers don't re-enable stuff after a challenge
-        handle_simple_disables(scenario, player_object, ids)
+        handle_simple_disables(player_object, ids)
 
         handle_instants(scenario, player_object, ids)
     else:
         ...
 
 
-# Todo: Move to extra_disables file (or just rework entirely ???)
-disables: List[ExtraInstantDisables]
-for player_id, disables in extra_disables.extra_instant_disables.items():
-    for disable in disables:
-        trigger = tm.add_trigger('Handle :)')
-        trigger.conditions.extend(disable.conditions)
-        disabled = getattr(pm.players[player_id], f"disabled_{disable.type_}")
-        for e in disable.disable_ids:
-            if e not in disabled:
-                disabled.append(e)
-                trigger.new_effect.enable_disable_object(object_list_unit_id=e, source_player=player_id, enabled=True)
+disables_object = Disables.get_instance()
+for disables in [disables_object.initial_disables, disables_object.other_disables]:
+    for player, disable_dict in disables.items():
+        for type_, disable_list_ in disable_dict.items():
+            getattr(pm.players[player], f"disabled_{type_}").extend(disable_list_)
+
+tm.import_triggers(disables_object.triggers)
+
+# # Todo: Move to extra_disables file (or just rework entirely ???)
+# disables: List[ExtraInstantDisables]
+# for player_id, disables in extra_disables.extra_instant_disables.items():
+#     for disable in disables:
+#         trigger = tm.add_trigger('Handle :)')
+#         trigger.conditions.extend(disable.conditions)
+#         disabled = getattr(pm.players[player_id], f"disabled_{disable.type_}")
+#         for e in disable.disable_ids:
+#             if e not in disabled:
+#                 disabled.append(e)
+#                 trigger.new_effect.enable_disable_object(object_list_unit_id=e, source_player=player_id, enabled=True)
 
 
 challengers = list(map(lambda colour: player_map.inverse[colour_map[colour.lower()]], challengers))

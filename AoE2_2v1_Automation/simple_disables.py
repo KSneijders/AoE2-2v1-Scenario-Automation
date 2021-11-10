@@ -1,26 +1,24 @@
-from typing import List
+from typing import List, Dict, Union
 
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.disable_structure import Disables
 from AoE2ScenarioParser.datasets.buildings import BuildingInfo
 from AoE2ScenarioParser.datasets.techs import TechInfo
 from AoE2ScenarioParser.datasets.units import UnitInfo
 from AoE2ScenarioParser.objects.data_objects.player import Player
-from AoE2ScenarioParser.objects.managers.de.trigger_manager_de import TriggerManagerDE
-from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
 
-def handle_simple_disables(scenario: AoE2DEScenario, player: Player, ids: List[str]):
-    for id_ in ids:
+def handle_simple_disables(player: Player, ids: Dict[str, Dict]):
+    disables = Disables.get_instance()
+
+    for id_ in ids.keys():
         if id_ in simple_disables.keys():
             for type_, list_or_item in simple_disables[id_].items():
-                if isinstance(list_or_item, list):
-                    getattr(player, f"disabled_{type_}").extend(list_or_item)
-                else:
-                    getattr(player, f"disabled_{type_}").append(list_or_item)
+                disables.add_initial_disables(list_or_item, player.player_id, type_)
 
 
-simple_disables = {
+simple_disables: Dict[str, Dict[str, Union[List[int], int]]] = {
     'no_mining_camps': {
-        'buildings': [BuildingInfo.MINING_CAMP.ID],
+        'buildings': BuildingInfo.MINING_CAMP.ID,
         'techs': [
             TechInfo.GOLD_MINING.ID,
             TechInfo.STONE_MINING.ID,
@@ -29,7 +27,7 @@ simple_disables = {
         ]
     },
     'no_lumber_camps': {
-        'buildings': [BuildingInfo.LUMBER_CAMP.ID],
+        'buildings': BuildingInfo.LUMBER_CAMP.ID,
         'techs': [
             TechInfo.DOUBLE_BIT_AXE.ID,
             TechInfo.BOW_SAW.ID,
