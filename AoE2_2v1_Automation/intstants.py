@@ -14,12 +14,6 @@ from AoE2ScenarioParser.objects.data_objects.trigger import Trigger
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
 
-def handle_instants(scenario: AoE2DEScenario, player: Player, ids: Dict[str, Dict]):
-    for id_ in ids.keys():
-        if id_ in instants:
-            instants[id_](scenario, player, ids[id_])
-
-
 def delete_starting_vills(scenario: AoE2DEScenario, player: Player, challenge: Dict, *args):
     tm, um = scenario.trigger_manager, scenario.unit_manager
     vills = um.filter_units_by_const(
@@ -28,7 +22,7 @@ def delete_starting_vills(scenario: AoE2DEScenario, player: Player, challenge: D
     )
     random.shuffle(vills)
     vills = vills[:int(challenge['selectedOption'])]
-    trigger = tm.add_trigger(f"Delete starting vills p{player.player_id} ({len(vills)})")
+    trigger = tm.add_trigger(f"[p{player.player_id}] Delete starting vills ({len(vills)})")
     trigger.new_effect.kill_object(selected_object_ids=[vill.reference_id for vill in vills])
 
 
@@ -38,7 +32,7 @@ def delete_starting_scout(scenario: AoE2DEScenario, player: Player, *args):
         unit_consts=[UnitInfo.SCOUT_CAVALRY.ID, UnitInfo.EAGLE_SCOUT.ID],
         player_list=[player.player_id]
     )[0]
-    trigger = tm.add_trigger(f"Delete starting scout p{player.player_id}")
+    trigger = tm.add_trigger(f"[p{player.player_id}] Delete starting scout")
     trigger.new_effect.kill_object(selected_object_ids=[scout.reference_id])
 
 
@@ -63,7 +57,7 @@ def instant_barracks(scenario: AoE2DEScenario, player: Player, *args):
         quantity=1,
         object_list=BuildingInfo.BARRACKS.ID,
         source_player=player.player_id,
-        area_x1=0, area_y1=0, area_x2=mm.map_size-1, area_y2=mm.map_size-1,
+        area_x1=0, area_y1=0, area_x2=mm.map_size - 1, area_y2=mm.map_size - 1,
     )
     for building in dark_age_buildings:
         trigger.new_effect.enable_disable_object(
@@ -81,7 +75,7 @@ def instant_loom(scenario: AoE2DEScenario, player: Player, *args):
     tc = um.filter_units_by_const(unit_consts=[BuildingInfo.TOWN_CENTER.ID], player_list=[player.player_id])[0]
 
     player.disabled_units.extend([UnitInfo.VILLAGER_MALE.ID, UnitInfo.VILLAGER_FEMALE.ID])
-    enable_vils_trigger = tm.add_trigger("Allow villager crafting", looping=True)
+    enable_vils_trigger = tm.add_trigger(f"[p{player.player_id}] Allow villager crafting", looping=True)
     enable_vils_trigger.new_condition.technology_state(
         quantity=TechnologyState.RESEARCHING,
         source_player=player.player_id,
@@ -98,7 +92,7 @@ def instant_loom(scenario: AoE2DEScenario, player: Player, *args):
         enabled=True
     )
 
-    disable_vills_trigger = tm.add_trigger("Revert allow villager crafting", enabled=False, looping=True)
+    disable_vills_trigger = tm.add_trigger(f"[p{player.player_id}] Revert allow villager crafting", enabled=False, looping=True)
     disable_vills_trigger.new_condition.technology_state(
         quantity=TechnologyState.RESEARCHING,
         source_player=player.player_id,
@@ -130,11 +124,3 @@ def instant_loom(scenario: AoE2DEScenario, player: Player, *args):
     )
     disable_vills_trigger.new_effect.deactivate_trigger(trigger_id=disable_vills_trigger.trigger_id)
     enable_vils_trigger.new_effect.activate_trigger(trigger_id=disable_vills_trigger.trigger_id)
-
-
-instants = {
-    'instant_loom': instant_loom,
-    'instant_barracks': instant_barracks,
-    'delete_starting_scout': delete_starting_scout,
-    'delete_starting_vills': delete_starting_vills,
-}
