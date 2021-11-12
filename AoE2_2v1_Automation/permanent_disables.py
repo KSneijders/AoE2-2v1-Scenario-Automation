@@ -7,16 +7,16 @@ from AoE2ScenarioParser.datasets.units import UnitInfo
 from AoE2ScenarioParser.objects.data_objects.player import Player
 
 
-def handle_simple_disables(player: Player, ids: Dict[str, Dict]):
+def handle_permanent_disables(player: Player, ids: Dict[str, Dict]):
     disables = Disables.get_instance()
 
     for id_ in ids.keys():
-        if id_ in simple_disables.keys():
-            for type_, list_or_item in simple_disables[id_].items():
+        if id_ in permanent_disables.keys():
+            for type_, list_or_item in permanent_disables[id_].items():
                 disables.add_initial_disables(list_or_item, player.player_id, type_)
 
 
-simple_disables: Dict[str, Dict[str, Union[List[int], int]]] = {
+permanent_disables: Dict[str, Dict[str, Union[List[int], int]]] = {
     'no_mining_camps': {
         'buildings': BuildingInfo.MINING_CAMP.ID,
         'techs': [
