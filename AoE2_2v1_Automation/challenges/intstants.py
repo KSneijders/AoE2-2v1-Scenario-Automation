@@ -2,6 +2,7 @@ import random
 from typing import Dict
 
 from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.disable_structure import Disables
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.helper import get_player_tc
 from AoE2ScenarioParser.datasets.buildings import BuildingInfo
 from AoE2ScenarioParser.datasets.conditions import ConditionId
 from AoE2ScenarioParser.datasets.object_support import Civilization
@@ -53,7 +54,6 @@ def instant_barracks(scenario: AoE2DEScenario, player: Player, *args):
 
     trigger = Trigger(f"Enable buildings after instant_barracks (p{player.player_id}")
     trigger.new_condition.objects_in_area(
-        object_type=ConditionId.OBJECTS_IN_AREA,
         quantity=1,
         object_list=BuildingInfo.BARRACKS.ID,
         source_player=player.player_id,
@@ -72,7 +72,7 @@ def instant_barracks(scenario: AoE2DEScenario, player: Player, *args):
 
 def instant_loom(scenario: AoE2DEScenario, player: Player, *args):
     tm, um = scenario.trigger_manager, scenario.unit_manager
-    tc = um.filter_units_by_const(unit_consts=[BuildingInfo.TOWN_CENTER.ID], player_list=[player.player_id])[0]
+    tc = get_player_tc(um, player.player_id)
 
     player.disabled_units.extend([UnitInfo.VILLAGER_MALE.ID, UnitInfo.VILLAGER_FEMALE.ID])
     enable_vils_trigger = tm.add_trigger(f"[p{player.player_id}] Allow villager crafting", looping=True)

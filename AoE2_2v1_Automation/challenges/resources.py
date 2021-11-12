@@ -1,5 +1,7 @@
 import random
+from typing import Dict, List
 
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.helper import get_player_tc
 from AoE2ScenarioParser.datasets.buildings import BuildingInfo
 from AoE2ScenarioParser.datasets.players import PlayerId
 from AoE2ScenarioParser.datasets.trigger_lists import PanelLocation, ObjectAttribute, Operation, ObjectType, ObjectClass
@@ -10,7 +12,7 @@ from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
 def no_mills(scenario: AoE2DEScenario, player: Player, *args):
     tm, um, mm = scenario.trigger_manager, scenario.unit_manager, scenario.map_manager
-    tc = um.filter_units_by_const([BuildingInfo.TOWN_CENTER.ID], player_list=[player.player_id])[0]
+    tc = get_player_tc(um, player.player_id)
 
     disable_mill = tm.add_trigger(f"[p{player.player_id}] Disable mill after 1 at tc", looping=True)
     disable_mill.new_condition.objects_in_area(
@@ -58,11 +60,17 @@ def no_mills(scenario: AoE2DEScenario, player: Player, *args):
     )
 
 
-def send_sheep_to_solo(scenario: AoE2DEScenario, player: Player, *args):
+def no_sheep(scenario: AoE2DEScenario, player: Player, *args):
     disable_resource_collection(scenario, player, "shepherd", "herd herdables")
 
+
+def send_sheep_to_solo(scenario: AoE2DEScenario, player: Player, _, players_sides: Dict[str, List[int]], *args):
     tm, um, mm = scenario.trigger_manager, scenario.unit_manager, scenario.map_manager
-    tc = um.filter_units_by_const([BuildingInfo.TOWN_CENTER.ID], player_list=[player.player_id])[0]
+    disable_resource_collection(scenario, player, "shepherd", "herd herdables")
+
+    defendant_id = random.choice(players_sides['defendants'])
+    tc = get_player_tc(um, player.player_id)
+    defendants_tc = get_player_tc(um, defendant_id)
 
     herdables = um.filter_units_by_const(unit_consts=[
         UnitInfo.SHEEP.ID, UnitInfo.GOAT.ID, UnitInfo.TURKEY.ID, UnitInfo.GOOSE.ID, UnitInfo.PIG.ID,
@@ -82,7 +90,7 @@ def send_sheep_to_solo(scenario: AoE2DEScenario, player: Player, *args):
     trigger.new_effect.task_object(
         object_group=ObjectClass.LIVESTOCK,
         source_player=player.player_id,
-        location_x=0, location_y=0,
+        location_x=int(defendants_tc.x), location_y=int(defendants_tc.y),
         area_x1=0, area_y1=0, area_x2=mm.map_size - 1, area_y2=mm.map_size - 1,
     )
 
