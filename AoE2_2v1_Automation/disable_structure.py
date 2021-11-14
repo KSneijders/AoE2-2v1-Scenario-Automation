@@ -4,6 +4,7 @@ from typing import List, Dict, Union
 
 from AoE2ScenarioParser.datasets.effects import EffectId
 from AoE2ScenarioParser.objects.data_objects.trigger import Trigger
+from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
 
 class Disables:
@@ -22,6 +23,7 @@ class Disables:
         self.other_disables: Dict[int, Dict[str, List[int]]] = get_disables_dict()
         self.triggers: List[Trigger] = []
         self.variable_generator = variable_nums()
+        self.age_requirements: Dict[str, List[Trigger]] = {}
 
     def next_var_id(self):
         return next(self.variable_generator)
@@ -52,15 +54,31 @@ class Disables:
         ]
 
         to_be_removed = []
-        for type_ in ['units', 'buildings']:
+        for type_ in ['units', 'buildings', 'techs']:
             for (index, effect) in enable_effects:
-                if effect.object_list_unit_id in self.initial_disables[player][type_]:
+                if type_ != "techs" and effect.object_list_unit_id in self.initial_disables[player][type_]:
+                    to_be_removed.append(index)
+                elif type_ == "techs" and effect.technology in self.initial_disables[player][type_]:
                     to_be_removed.append(index)
 
         trigger.effects = [
             effect for (index, effect) in enumerate(trigger.effects) if index not in to_be_removed
         ]
         self.triggers.append(trigger)
+
+        if age_requirement != "":
+            self.age_requirements.setdefault(age_requirement, []).append(trigger)
+
+    def combine_age_requirements(self, scenario: AoE2DEScenario):
+        xm = scenario.xs_manager
+
+        xs_string = ""
+        for age, trigger_list in self.age_requirements.items():
+            for trigger in trigger_list:
+                print(trigger)
+                # xs_string += "bool allFeudalTechs = false;"
+        exit()
+        xm.add_script(xs_string=xs_string)
 
 
 def get_disables_dict():

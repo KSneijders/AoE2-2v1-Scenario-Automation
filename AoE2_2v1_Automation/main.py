@@ -5,14 +5,17 @@ from typing import Dict
 
 from bidict import bidict
 
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.civs import get_civ
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.data import colour_to_player_id
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.challenges.challenges import challenges
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.disable_structure import Disables
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.encoded_strings import base64_encoded
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.challenges.challenges import challenge_map, \
+    challenge_dependencies
 from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.challenges.permanent_disables import \
     handle_permanent_disables
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.civs import get_civ
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.data import colour_to_player_id
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.disable_structure import Disables
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.encoded_strings import base64_encoded
+from AoE2ScenarioParser.datasets.object_support import StartingAge, Civilization
 from AoE2ScenarioParser.datasets.players import ColorId
+from AoE2ScenarioParser.datasets.units import UnitInfo
 from AoE2ScenarioParser.local_config import folder_2v1, folder_de
 from AoE2ScenarioParser.objects.data_objects.player import Player
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
@@ -27,7 +30,7 @@ for p in pm.players:
     p.color = ColorId.GRAY
 
 randomized_player_ids = list(range(1, len(base64_encoded) + 1))
-# random.shuffle(randomized_player_ids)
+random.shuffle(randomized_player_ids)
 player_colour_map: bidict = bidict()
 """Maps Player ID to their colour"""
 
@@ -56,6 +59,7 @@ for index, profile_settings in enumerate(decoded_profiles):
 
     player_object: Player = scenario.player_manager.players[randomized_id]
     player_object.color = ColorId.from_player_id(colour_id)
+    player_object.starting_age = StartingAge.DARK_AGE
     player_colour_map[randomized_id] = colour_id
 
     # Civs don't work...
@@ -66,6 +70,14 @@ for index, profile_settings in enumerate(decoded_profiles):
 challengers = list(map(lambda colour: player_colour_map.inverse[colour_to_player_id[colour.lower()]], challengers))
 defendants = list(map(lambda colour: player_colour_map.inverse[colour_to_player_id[colour.lower()]], defendants))
 
+for player_id in challengers + defendants:
+    player_object = pm.players[player_id]
+    if player_object.civilization in [Civilization.AZTECS, Civilization.INCAS, Civilization.MAYANS]:
+        um.filter_units_by_const(
+            unit_consts=[UnitInfo.SCOUT_CAVALRY.ID],
+            player_list=[player_object.player_id],
+        )[0].unit_const = UnitInfo.EAGLE_SCOUT.ID
+
 for challenger_id in challengers:
     player_object = pm.players[challenger_id]
 
@@ -75,19 +87,27 @@ for challenger_id in challengers:
     handle_permanent_disables(player_object, ids)
 
     for id_ in ids.keys():
-        if id_ in challenges:
-            challenges[id_](scenario, player_object, ids[id_], {
-                'challenges': challengers,
-                'defendants': defendants
-            })
+        if id_ in challenge_map:
+            dependencies = {c_id: ids[c_id] for c_id in challenge_dependencies.get(id_, []) if c_id in ids}
+            challenge_map[id_](
+                scenario,
+                player_object,
+                challenge=ids[id_],
+                players_sides={
+                    'challenges': challengers,
+                    'defendants': defendants
+                },
+                dependencies=dependencies
+            )
 
 disables_object = Disables.get_instance()
 for disables in [disables_object.initial_disables, disables_object.other_disables]:
     for player, disable_dict in disables.items():
         for type_, disable_list_ in disable_dict.items():
             getattr(pm.players[player], f"disabled_{type_}").extend(disable_list_)
+# disables_object.combine_age_requirements(scenario)
 
 tm.import_triggers(disables_object.triggers)
-pm.create_diplomacy_teams(challengers, defendants)
+pm.set_diplomacy_teams(challengers, defendants)
 
 scenario.write_to_file(f"{folder_de}!2v1-{filename}.aoe2scenario")

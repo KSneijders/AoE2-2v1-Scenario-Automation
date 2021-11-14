@@ -1,7 +1,7 @@
 import random
 from typing import Dict, List
 
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.helper import get_player_tc
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.helper import get_player_tc, entire_map
 from AoE2ScenarioParser.datasets.buildings import BuildingInfo
 from AoE2ScenarioParser.datasets.players import PlayerId
 from AoE2ScenarioParser.datasets.trigger_lists import PanelLocation, ObjectAttribute, Operation, ObjectType, ObjectClass
@@ -10,7 +10,7 @@ from AoE2ScenarioParser.objects.data_objects.player import Player
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
 
-def no_mills(scenario: AoE2DEScenario, player: Player, *args):
+def no_mills(scenario: AoE2DEScenario, player: Player, **kwargs):
     tm, um, mm = scenario.trigger_manager, scenario.unit_manager, scenario.map_manager
     tc = get_player_tc(um, player.player_id)
 
@@ -32,7 +32,7 @@ def no_mills(scenario: AoE2DEScenario, player: Player, *args):
         quantity=0,
         object_list=BuildingInfo.MILL.ID,
         source_player=player.player_id,
-        area_x1=0, area_y1=0, area_x2=mm.map_size - 1, area_y2=mm.map_size - 1
+        **entire_map(scenario)
     )
     enable_mill.new_effect.enable_disable_object(
         object_list_unit_id=BuildingInfo.MILL.ID,
@@ -56,16 +56,13 @@ def no_mills(scenario: AoE2DEScenario, player: Player, *args):
     remove_mills.new_effect.kill_object(
         object_list_unit_id=BuildingInfo.MILL.ID,
         source_player=player.player_id,
-        area_x1=0, area_y1=0, area_x2=mm.map_size - 1, area_y2=mm.map_size - 1
+        **entire_map(scenario)
     )
 
 
-def no_sheep(scenario: AoE2DEScenario, player: Player, *args):
-    disable_resource_collection(scenario, player, "shepherd", "herd herdables")
-
-
-def send_sheep_to_solo(scenario: AoE2DEScenario, player: Player, _, players_sides: Dict[str, List[int]], *args):
+def send_sheep_to_solo(scenario: AoE2DEScenario, player: Player, **kwargs):
     tm, um, mm = scenario.trigger_manager, scenario.unit_manager, scenario.map_manager
+    players_sides = kwargs['players_sides']
     disable_resource_collection(scenario, player, "shepherd", "herd herdables")
 
     defendant_id = random.choice(players_sides['defendants'])
@@ -91,19 +88,23 @@ def send_sheep_to_solo(scenario: AoE2DEScenario, player: Player, _, players_side
         object_group=ObjectClass.LIVESTOCK,
         source_player=player.player_id,
         location_x=int(defendants_tc.x), location_y=int(defendants_tc.y),
-        area_x1=0, area_y1=0, area_x2=mm.map_size - 1, area_y2=mm.map_size - 1,
+        **entire_map(scenario)
     )
 
 
-def no_forage_bush(scenario: AoE2DEScenario, player: Player, *args):
+def no_sheep(scenario: AoE2DEScenario, player: Player, **kwargs):
+    disable_resource_collection(scenario, player, "shepherd", "herd herdables")
+
+
+def no_forage_bush(scenario: AoE2DEScenario, player: Player, **kwargs):
     disable_resource_collection(scenario, player, "forager", "forage berries")
 
 
-def no_stone(scenario: AoE2DEScenario, player: Player, *args):
+def no_stone(scenario: AoE2DEScenario, player: Player, **kwargs):
     disable_resource_collection(scenario, player, "stone_miner", "mine stone")
 
 
-def no_hunt(scenario: AoE2DEScenario, player: Player, *args):
+def no_hunt(scenario: AoE2DEScenario, player: Player, **kwargs):
     disable_resource_collection(scenario, player, "hunter", "hunt")
 
 
@@ -119,14 +120,14 @@ def disable_resource_collection(scenario: AoE2DEScenario, player: Player, name: 
     trigger.new_effect.send_chat(
         source_player=player.player_id,
         message=f"<RED>"
-                f"! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! "
-                f"-- You are not allowed to {action or f'have {name} vills'} -- "
-                f"! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! "
+                f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "
+                f"You are not allowed to {action or f'have {name} vills'} "
+                f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "
     )
     trigger.new_effect.stop_object(
         object_list_unit_id=UnitInfo[f"VILLAGER_MALE_{name.upper()}"].ID,
         source_player=player.player_id,
-        area_x1=0, area_y1=0, area_x2=mm.map_size - 1, area_y2=mm.map_size - 1,
+        **entire_map(scenario)
     )
 
     trigger = tm.add_trigger(f"[p{player.player_id}] Remove {name.replace('_', ' ')} work rate")
