@@ -13,6 +13,21 @@ from AoE2ScenarioParser.objects.data_objects.trigger import Trigger
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
 
+
+
+def delay_age_until_solo_aged(scenario: AoE2DEScenario, player: Player, **kwargs):
+    players_sides = kwargs['players_sides']
+    defendant_id = players_sides['defendants'][0]
+
+    for age in ["feudal", "castle", "imperial"]:
+        trigger = Trigger(f"[p{player.player_id}] Wait for defendant {age.capitalize()} age")
+        trigger.new_condition.research_technology(
+            source_player=defendant_id,
+            technology=TechInfo[f"{age.upper()}_AGE"].ID
+        )
+        Disables.get_instance().add_trigger(player.player_id, trigger, age_requirement=age)
+
+
 def max_pop(_, player: Player, **kwargs):
     player.population_cap = int(kwargs['challenge']['selectedOption'])
 

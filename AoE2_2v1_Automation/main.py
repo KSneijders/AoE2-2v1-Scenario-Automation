@@ -30,7 +30,7 @@ for p in pm.players:
     p.color = ColorId.GRAY
 
 randomized_player_ids = list(range(1, len(base64_encoded) + 1))
-random.shuffle(randomized_player_ids)
+# random.shuffle(randomized_player_ids)
 player_colour_map: bidict = bidict()
 """Maps Player ID to their colour"""
 
@@ -105,7 +105,7 @@ for disables in [disables_object.initial_disables, disables_object.other_disable
     for player, disable_dict in disables.items():
         for type_, disable_list_ in disable_dict.items():
             getattr(pm.players[player], f"disabled_{type_}").extend(disable_list_)
-# disables_object.combine_age_requirements(scenario)
+disables_object.combine_age_requirements(scenario)
 
 tm.import_triggers(disables_object.triggers)
 pm.set_diplomacy_teams(challengers, defendants)

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import List, Dict, Union
 
 from AoE2ScenarioParser.datasets.effects import EffectId
+from AoE2ScenarioParser.datasets.techs import TechInfo
 from AoE2ScenarioParser.objects.data_objects.trigger import Trigger
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
@@ -23,7 +24,7 @@ class Disables:
         self.other_disables: Dict[int, Dict[str, List[int]]] = get_disables_dict()
         self.triggers: List[Trigger] = []
         self.variable_generator = variable_nums()
-        self.age_requirements: Dict[str, List[Trigger]] = {}
+        self.age_requirements: Dict[str, Dict[int, List[Trigger]]] = {}
 
     def next_var_id(self):
         return next(self.variable_generator)
@@ -67,18 +68,41 @@ class Disables:
         self.triggers.append(trigger)
 
         if age_requirement != "":
-            self.age_requirements.setdefault(age_requirement, []).append(trigger)
+            self.age_requirements.setdefault(age_requirement, {}).setdefault(player, []).append(trigger)
 
     def combine_age_requirements(self, scenario: AoE2DEScenario):
-        xm = scenario.xs_manager
+        xm, tm, pm = scenario.xs_manager, scenario.trigger_manager, scenario.player_manager
 
-        xs_string = ""
-        for age, trigger_list in self.age_requirements.items():
-            for trigger in trigger_list:
-                print(trigger)
-                # xs_string += "bool allFeudalTechs = false;"
-        exit()
-        xm.add_script(xs_string=xs_string)
+        xs_list = []
+        for age, player_dict in self.age_requirements.items():
+            for p_id, trigger_list in player_dict.items():
+                if len(trigger_list) == 0:
+                    continue
+                age_tech = TechInfo[f"{age.upper()}_AGE"].ID
+                pm.players[p_id].disabled_techs.append(age_tech)
+
+                for index, trigger in enumerate(trigger_list):
+                    xs_list.append(f"bool {age}{index}p{p_id} = false;")
+                    trigger.new_effect.script_call(
+                        message=construct_enable_requirement_function(
+                            age, p_id, index
+                        )
+                    )
+
+                conditions = [f"{age}{i}p{p_id}" for i in range(len(trigger_list))]
+                xs_list.append(
+                    get_age_requirement_xs_function(
+                        age, p_id, ' && '.join(conditions)
+                    )
+                )
+
+                unlock_trigger = tm.add_trigger(f"[p{p_id}] {age.capitalize()} Requirements - unlock age")
+                unlock_trigger.new_condition.script_call(xs_function=f"{age}p{str(int(p_id))}Requirements")
+                unlock_trigger.new_effect.enable_disable_technology(
+                    source_player=p_id,
+                    technology=age_tech
+                )
+        xm.add_script(xs_string='\n'.join(xs_list))
 
 
 def get_disables_dict():
