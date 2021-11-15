@@ -12,6 +12,24 @@ blacksmith_imp_techs = [TechInfo.BRACER.ID, TechInfo.BLAST_FURNACE.ID, TechInfo.
                         TechInfo.PLATE_BARDING_ARMOR.ID, TechInfo.PLATE_MAIL_ARMOR.ID]
 
 
+def get_murder_holes(scenario: AoE2DEScenario, player: Player, **kwargs):
+    trigger = Trigger(f"[p{player.player_id}] Get murder holes")
+    trigger.new_condition.research_technology(
+        source_player=player.player_id,
+        technology=TechInfo.MURDER_HOLES.ID
+    )
+    Disables.get_instance().add_trigger(player.player_id, trigger, age_requirement="imperial")
+
+
+def get_heresy(scenario: AoE2DEScenario, player: Player, **kwargs):
+    trigger = Trigger(f"[p{player.player_id}] Get heresy")
+    trigger.new_condition.research_technology(
+        source_player=player.player_id,
+        technology=TechInfo.HERESY.ID
+    )
+    Disables.get_instance().add_trigger(player.player_id, trigger, age_requirement="imperial")
+
+
 def get_all_blacksmith_techs(scenario: AoE2DEScenario, player: Player, **kwargs):
     feudal_trigger = Trigger(f"[p{player.player_id}] Get all BS Feudal techs")
     for tech in blacksmith_feudal_techs:
@@ -25,8 +43,8 @@ def get_all_blacksmith_techs(scenario: AoE2DEScenario, player: Player, **kwargs)
             source_player=player.player_id,
             technology=tech
         )
-    Disables.get_instance().add_trigger(player.player_id, feudal_trigger, age_requirement="feudal")
-    Disables.get_instance().add_trigger(player.player_id, castle_trigger, age_requirement="castle")
+    Disables.get_instance().add_trigger(player.player_id, feudal_trigger, age_requirement="castle")
+    Disables.get_instance().add_trigger(player.player_id, castle_trigger, age_requirement="imperial")
 
 
 def no_current_age_blacksmith_techs(scenario: AoE2DEScenario, player: Player, **kwargs):

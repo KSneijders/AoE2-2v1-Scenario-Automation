@@ -1,14 +1,15 @@
-from typing import Dict
-
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.disable_structure import Disables
 from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.helper import get_player_tc, entire_map, \
     deep_get
+from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.temp_var import TempVar
 from AoE2ScenarioParser.datasets.buildings import BuildingInfo
 from AoE2ScenarioParser.datasets.object_support import Civilization
 from AoE2ScenarioParser.datasets.techs import TechInfo
-from AoE2ScenarioParser.datasets.trigger_lists import ObjectClass, ActionType, Attribute, Operation, ObjectAttribute
+from AoE2ScenarioParser.datasets.trigger_lists import ObjectClass, ActionType, Attribute, Operation, ObjectAttribute, \
+    Comparison
 from AoE2ScenarioParser.datasets.units import UnitInfo
-from AoE2ScenarioParser.helper.pretty_format import pretty_format_dict
 from AoE2ScenarioParser.objects.data_objects.player import Player
+from AoE2ScenarioParser.objects.data_objects.trigger import Trigger
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
 
@@ -195,15 +196,8 @@ def kill_vills_when_housed(scenario: AoE2DEScenario, player: Player, **kwargs):
         attribute=Attribute.QUEUED_COUNT,
         source_player=player.player_id,
     )
-    teleport_vills_when_housed.new_effect.display_instructions(
-        message="ITS MAX POP IDIOT",
-        object_list_unit_id=UnitInfo.VILLAGER_MALE.ID,
-        display_time=5,
-    )
-    ids = []
     for i in range(5):
-        t1 = tm.add_trigger(f">>> Teleport vill {i}", enabled=False, looping=True)
-        t1.new_effect.teleport_object(
+        teleport_vills_when_housed.new_effect.teleport_object(
             object_group=ObjectClass.CIVILIAN,
             source_player=player.player_id,
             location_x=1, location_y=1,
@@ -212,18 +206,14 @@ def kill_vills_when_housed(scenario: AoE2DEScenario, player: Player, **kwargs):
             area_x2=mm.map_size - 1,
             area_y2=mm.map_size - 1
         )
-        t1.new_effect.deactivate_trigger(t1.trigger_id)
-
-        t2 = tm.add_trigger(f">>> Remove vill {i}", enabled=False, looping=True)
-        t2.new_effect.remove_object(
+        teleport_vills_when_housed.new_effect.remove_object(
             source_player=player.player_id,
             area_x1=0, area_y1=0, area_x2=1, area_y2=1
         )
-        t2.new_effect.deactivate_trigger(t2.trigger_id)
-        ids.extend((t1.trigger_id, t2.trigger_id))
-
-    for id_ in ids:
-        teleport_vills_when_housed.new_effect.activate_trigger(id_)
+        teleport_vills_when_housed.new_effect.send_chat(
+            source_player=player.player_id,
+            message=f"R.I.P. Villager {i + 1}... You're housed btw!",
+        )
 
     no_houses = tm.add_trigger(f"[p{player.player_id}] No houses", enabled=False, looping=True)
     no_houses.new_condition.own_fewer_objects(
@@ -252,3 +242,4 @@ def kill_vills_when_housed(scenario: AoE2DEScenario, player: Player, **kwargs):
 
     wait_for_headroom.new_effect.activate_trigger(teleport_vills_when_housed.trigger_id)
     wait_for_headroom.new_effect.deactivate_trigger(wait_for_headroom.trigger_id)
+

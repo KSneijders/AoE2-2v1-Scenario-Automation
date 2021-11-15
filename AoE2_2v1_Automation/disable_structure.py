@@ -90,3 +90,27 @@ def get_disables_dict():
 def variable_nums():
     for x in range(256):
         yield x
+
+
+def get_age_requirement_xs_function(age: str, player_id: int, condition: str):
+    return '\n'.join([
+        f'bool {age}p{player_id}Requirements() {{',
+        f'    if ({condition}) {{',
+        f'        return (true);',
+        f'    }}',
+        f'    return (false);',
+        f'}}'
+    ])
+
+
+def construct_enable_requirement_function(age: str, player_id: int, index: int):
+    return '\n'.join([
+        f'void p{player_id}Enable{age.capitalize()}{index}() {{',
+        f'    {age}{index}p{player_id} = true;',
+        f'}}',
+    ])
+
+
+_xs_enable_requirement_function = \
+    f"""
+"""
