@@ -28,10 +28,14 @@ challenge_map = {
     'get_murder_holes': get_murder_holes,
     'get_heresy': get_heresy,
     'delay_age_until_solo_aged': delay_age_until_solo_aged,
+    # 'kill_vills_per_age': kill_vills_per_age,
 }
 
 challenge_dependencies = {
     'kill_vills_when_housed': [
         'max_pop'
-    ]
+    ],
+    'kill_vills_per_age': [
+        'max_pop'
+    ],
 }

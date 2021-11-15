@@ -13,6 +13,58 @@ from AoE2ScenarioParser.objects.data_objects.trigger import Trigger
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
 
+def kill_vills_per_age(scenario: AoE2DEScenario, player: Player, **kwargs):
+    tm, um, xm, mm = scenario.trigger_manager, scenario.unit_manager, scenario.xs_manager, scenario.map_manager
+    percentage = int(kwargs['challenge']['selectedOption'])  # 20 or 40
+
+    pop_cap = int(kwargs['challenge']['selectedOption'])
+    if pop_cap is not None:
+        pop_cap = int(pop_cap)
+    else:
+        pop_cap = 200 if player.civilization != Civilization.GOTHS else 210
+
+    xm.add_script(xs_string='\n'.join([
+        f"void killP{player.player_id}Vills() {{",
+        f"",
+        f"",
+        f"",
+        f"}}",
+    ]))
+
+    for age in ["feudal", "castle", "imperial"]:
+        trigger = tm.add_trigger(f"[p{player.player_id}] Kill vills when reaching {age} age")
+        trigger.new_condition.research_technology(
+            source_player=player.player_id,
+            technology=TechInfo[f"{age.upper()}_AGE"].ID
+        )
+        trigger.new_effect.script_call(
+            message="\n".join([
+                f"void p{player.player_id}Kill{percentage}Percent{age.capitalize()}AgeVills {{",
+                f"    killP{player.player_id}Vills();",
+                f"}}"
+            ])
+        )
+
+    for i in range(pop_cap):
+        trigger = tm.add_trigger(f"Kill vill when var > 0 {i}", enabled=False, looping=True)
+        trigger.new_condition.script_call(xs_function="ifKillCountAboveZero")
+        trigger.new_effect.teleport_object(
+            object_group=ObjectClass.CIVILIAN,
+            source_player=player.player_id,
+            location_x=1, location_y=1,
+            area_x1=0,
+            area_y1=0,
+            area_x2=mm.map_size - 1,
+            area_y2=mm.map_size - 1
+        )
+        trigger.new_effect.remove_object(
+            source_player=player.player_id,
+            area_x1=0, area_y1=0, area_x2=1, area_y2=1
+        )
+        trigger.new_effect.send_chat(
+            source_player=player.player_id,
+            message=f"R.I.P. Villager {i + 1}... You're housed btw!",
+        )
 
 
 def delay_age_until_solo_aged(scenario: AoE2DEScenario, player: Player, **kwargs):
