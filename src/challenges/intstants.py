@@ -9,8 +9,8 @@ from AoE2ScenarioParser.objects.data_objects.player.player import Player
 from AoE2ScenarioParser.objects.data_objects.trigger import Trigger
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 
-from AoE2_2v1_Automation.disable_structure import Disables
-from AoE2_2v1_Automation.helper import get_player_tc, entire_map
+from src.disable_structure import Disables
+from src.helper import get_player_tc, entire_map
 
 
 def delete_starting_vills(scenario: AoE2DEScenario, player: Player, **kwargs):

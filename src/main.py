@@ -10,13 +10,13 @@ from AoE2ScenarioParser.objects.data_objects.player.player import Player
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
 from bidict import bidict
 
-from AoE2_2v1_Automation.challenges.challenges import challenge_map, challenge_dependencies
-from AoE2_2v1_Automation.challenges.permanent_disables import handle_permanent_disables
-from AoE2_2v1_Automation.civs import get_civ
-from AoE2_2v1_Automation.data import colour_to_player_id
-from AoE2_2v1_Automation.disable_structure import Disables
-from AoE2_2v1_Automation.encoded_strings import base64_encoded
-from AoE2_2v1_Automation.local_config import folder_2v1, folder_de
+from src.challenges.challenges import challenge_map, challenge_dependencies
+from src.challenges.permanent_disables import handle_permanent_disables
+from src.civs import get_civ
+from src.data import colour_to_player_id
+from src.disable_structure import Disables
+from src.encoded_strings import base64_encoded
+from src.local_config import folder_2v1, folder_de
 
 filename = f"arabia"
 num = random.randint(1, 10)
