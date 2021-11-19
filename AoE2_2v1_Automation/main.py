@@ -3,22 +3,20 @@ import json
 import random
 from typing import Dict
 
-from bidict import bidict
-
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.challenges.challenges import challenge_map, \
-    challenge_dependencies
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.challenges.permanent_disables import \
-    handle_permanent_disables
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.civs import get_civ
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.data import colour_to_player_id
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.disable_structure import Disables
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.encoded_strings import base64_encoded
 from AoE2ScenarioParser.datasets.object_support import StartingAge, Civilization
 from AoE2ScenarioParser.datasets.players import ColorId
 from AoE2ScenarioParser.datasets.units import UnitInfo
-from AoE2ScenarioParser.local_config import folder_2v1, folder_de
-from AoE2ScenarioParser.objects.data_objects.player import Player
+from AoE2ScenarioParser.objects.data_objects.player.player import Player
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
+from bidict import bidict
+
+from AoE2_2v1_Automation.challenges.challenges import challenge_map, challenge_dependencies
+from AoE2_2v1_Automation.challenges.permanent_disables import handle_permanent_disables
+from AoE2_2v1_Automation.civs import get_civ
+from AoE2_2v1_Automation.data import colour_to_player_id
+from AoE2_2v1_Automation.disable_structure import Disables
+from AoE2_2v1_Automation.encoded_strings import base64_encoded
+from AoE2_2v1_Automation.local_config import folder_2v1, folder_de
 
 filename = f"arabia"
 num = random.randint(1, 10)
@@ -65,7 +63,6 @@ for index, profile_settings in enumerate(decoded_profiles):
     # Civs don't work...
     player_object.civilization = civ
     # player_object.lock_civ = True
-
 
 challengers = list(map(lambda colour: player_colour_map.inverse[colour_to_player_id[colour.lower()]], challengers))
 defendants = list(map(lambda colour: player_colour_map.inverse[colour_to_player_id[colour.lower()]], defendants))

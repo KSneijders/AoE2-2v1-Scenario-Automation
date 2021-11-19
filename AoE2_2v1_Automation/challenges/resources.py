@@ -1,13 +1,13 @@
 import random
-from typing import Dict, List
 
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.helper import get_player_tc, entire_map
 from AoE2ScenarioParser.datasets.buildings import BuildingInfo
 from AoE2ScenarioParser.datasets.players import PlayerId
-from AoE2ScenarioParser.datasets.trigger_lists import PanelLocation, ObjectAttribute, Operation, ObjectType, ObjectClass
+from AoE2ScenarioParser.datasets.trigger_lists import ObjectAttribute, Operation, ObjectClass
 from AoE2ScenarioParser.datasets.units import UnitInfo
-from AoE2ScenarioParser.objects.data_objects.player import Player
+from AoE2ScenarioParser.objects.data_objects.player.player import Player
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
+
+from AoE2_2v1_Automation.helper import get_player_tc, entire_map
 
 
 def no_mills(scenario: AoE2DEScenario, player: Player, **kwargs):

@@ -1,10 +1,11 @@
 from typing import List, Dict, Union
 
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.disable_structure import Disables
 from AoE2ScenarioParser.datasets.buildings import BuildingInfo
 from AoE2ScenarioParser.datasets.techs import TechInfo
 from AoE2ScenarioParser.datasets.units import UnitInfo
-from AoE2ScenarioParser.objects.data_objects.player import Player
+from AoE2ScenarioParser.objects.data_objects.player.player import Player
+
+from AoE2_2v1_Automation.disable_structure import Disables
 
 
 def handle_permanent_disables(player: Player, ids: Dict[str, Dict]):

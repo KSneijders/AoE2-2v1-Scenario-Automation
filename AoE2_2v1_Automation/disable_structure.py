@@ -135,6 +135,5 @@ def construct_enable_requirement_function(age: str, player_id: int, index: int):
     ])
 
 
-_xs_enable_requirement_function = \
-    f"""
+_xs_enable_requirement_function = f"""
 """

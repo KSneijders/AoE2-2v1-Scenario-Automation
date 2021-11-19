@@ -12,4 +12,3 @@ colour_to_player_id: Dict = {
     'grey': PlayerId.SEVEN,
     'orange': PlayerId.EIGHT,
 }
-

@@ -1,8 +1,9 @@
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.disable_structure import Disables
 from AoE2ScenarioParser.datasets.techs import TechInfo
-from AoE2ScenarioParser.objects.data_objects.player import Player
+from AoE2ScenarioParser.objects.data_objects.player.player import Player
 from AoE2ScenarioParser.objects.data_objects.trigger import Trigger
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
+
+from AoE2_2v1_Automation.disable_structure import Disables
 
 blacksmith_feudal_techs = [TechInfo.FLETCHING.ID, TechInfo.FORGING.ID, TechInfo.PADDED_ARCHER_ARMOR.ID,
                            TechInfo.SCALE_BARDING_ARMOR.ID, TechInfo.SCALE_MAIL_ARMOR.ID]

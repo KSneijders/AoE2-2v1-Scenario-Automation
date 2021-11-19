@@ -1,16 +1,14 @@
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.disable_structure import Disables
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.helper import get_player_tc, entire_map, \
-    deep_get
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.temp_var import TempVar
 from AoE2ScenarioParser.datasets.buildings import BuildingInfo
 from AoE2ScenarioParser.datasets.object_support import Civilization
 from AoE2ScenarioParser.datasets.techs import TechInfo
-from AoE2ScenarioParser.datasets.trigger_lists import ObjectClass, ActionType, Attribute, Operation, ObjectAttribute, \
-    Comparison
+from AoE2ScenarioParser.datasets.trigger_lists import ObjectClass, ActionType, Attribute, Operation, ObjectAttribute
 from AoE2ScenarioParser.datasets.units import UnitInfo
-from AoE2ScenarioParser.objects.data_objects.player import Player
+from AoE2ScenarioParser.objects.data_objects.player.player import Player
 from AoE2ScenarioParser.objects.data_objects.trigger import Trigger
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
+
+from AoE2_2v1_Automation.disable_structure import Disables
+from AoE2_2v1_Automation.helper import get_player_tc, entire_map, deep_get
 
 
 def kill_vills_per_age(scenario: AoE2DEScenario, player: Player, **kwargs):
@@ -309,4 +307,3 @@ def kill_vills_when_housed(scenario: AoE2DEScenario, player: Player, **kwargs):
 
     wait_for_headroom.new_effect.activate_trigger(teleport_vills_when_housed.trigger_id)
     wait_for_headroom.new_effect.deactivate_trigger(wait_for_headroom.trigger_id)
-

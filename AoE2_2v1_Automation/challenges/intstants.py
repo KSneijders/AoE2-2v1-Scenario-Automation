@@ -1,18 +1,16 @@
 import random
-from typing import Dict
 
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.disable_structure import Disables
-from AoE2ScenarioParser.AoE2_2v1_Scenario_Automation.AoE2_2v1_Automation.helper import get_player_tc, entire_map
 from AoE2ScenarioParser.datasets.buildings import BuildingInfo
-from AoE2ScenarioParser.datasets.conditions import ConditionId
 from AoE2ScenarioParser.datasets.object_support import Civilization
-from AoE2ScenarioParser.datasets.players import PlayerId
 from AoE2ScenarioParser.datasets.techs import TechInfo
 from AoE2ScenarioParser.datasets.trigger_lists import TechnologyState, ActionType
 from AoE2ScenarioParser.datasets.units import UnitInfo
-from AoE2ScenarioParser.objects.data_objects.player import Player
+from AoE2ScenarioParser.objects.data_objects.player.player import Player
 from AoE2ScenarioParser.objects.data_objects.trigger import Trigger
 from AoE2ScenarioParser.scenarios.aoe2_de_scenario import AoE2DEScenario
+
+from AoE2_2v1_Automation.disable_structure import Disables
+from AoE2_2v1_Automation.helper import get_player_tc, entire_map
 
 
 def delete_starting_vills(scenario: AoE2DEScenario, player: Player, **kwargs):
@@ -92,7 +90,8 @@ def instant_loom(scenario: AoE2DEScenario, player: Player, **kwargs):
         enabled=True
     )
 
-    disable_vills_trigger = tm.add_trigger(f"[p{player.player_id}] Revert allow villager crafting", enabled=False, looping=True)
+    disable_vills_trigger = tm.add_trigger(f"[p{player.player_id}] Revert allow villager crafting", enabled=False,
+                                           looping=True)
     disable_vills_trigger.new_condition.technology_state(
         quantity=TechnologyState.RESEARCHING,
         source_player=player.player_id,
