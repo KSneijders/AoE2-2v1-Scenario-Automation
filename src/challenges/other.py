@@ -93,6 +93,7 @@ def max_vills_in_dark_age(scenario: AoE2DEScenario, player: Player, **kwargs):
     disable_trigger = tm.add_trigger(f"[p{player.player_id}] Disable vills when max reached", looping=True)
     disable_trigger.new_condition.own_objects(
         quantity=max_vil_count,
+        source_player=player.player_id,
         object_group=ObjectClass.CIVILIAN
     )
     for gender in genders:
