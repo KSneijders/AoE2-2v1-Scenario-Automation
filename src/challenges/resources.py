@@ -79,15 +79,37 @@ def send_sheep_to_solo(scenario: AoE2DEScenario, player: Player, **kwargs):
         unit_list=herdables
     )
 
-    trigger = tm.add_trigger("Disable herdable selection")
-    trigger.new_effect.disable_object_selection(selected_object_ids=[herdable.reference_id for herdable in herdables])
+    for index, herdable in enumerate(herdables):
+        disable_selection = tm.add_trigger(f"Disable herdable selection {index}", looping=True)
+        disable_selection.new_condition.capture_object(
+            unit_object=herdable.reference_id,
+            source_player=player.player_id
+        )
+        disable_selection.new_effect.disable_object_selection(selected_object_ids=herdable.reference_id)
+        disable_selection.new_effect.send_chat(message="Disbaled sekectuib")
 
-    trigger = tm.add_trigger("Disable herdable selection", looping=True)
+        enable_selection = tm.add_trigger(f"Enable herdable selection {index}", looping=True)
+        enable_selection.new_condition.capture_object(
+            unit_object=herdable.reference_id,
+            source_player=player.player_id,
+            inverted=True
+        )
+        enable_selection.new_effect.enable_object_selection(selected_object_ids=herdable.reference_id)
+        enable_selection.new_effect.send_chat(message="Enabled sekectuib")
+
+        enable_selection.new_effect.deactivate_trigger(enable_selection.trigger_id)
+        enable_selection.new_effect.activate_trigger(disable_selection.trigger_id)
+
+        disable_selection.new_effect.deactivate_trigger(disable_selection.trigger_id)
+        disable_selection.new_effect.activate_trigger(enable_selection.trigger_id)
+
+    trigger = tm.add_trigger("Move sheep to solo TC", looping=True)
     trigger.new_condition.timer(timer=3)
     trigger.new_effect.task_object(
         object_group=ObjectClass.LIVESTOCK,
         source_player=player.player_id,
-        location_x=int(defendants_tc.x), location_y=int(defendants_tc.y),
+        location_x=int(defendants_tc.x),
+        location_y=int(defendants_tc.y),
         **entire_map(scenario)
     )
 
