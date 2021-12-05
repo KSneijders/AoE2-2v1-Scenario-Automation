@@ -15,7 +15,7 @@ def kill_vills_per_age(scenario: AoE2DEScenario, player: Player, **kwargs):
     tm, um, xm, mm = scenario.trigger_manager, scenario.unit_manager, scenario.xs_manager, scenario.map_manager
     percentage = int(kwargs['challenge']['selectedOption'])  # 20 or 40
 
-    pop_cap = int(kwargs['challenge']['selectedOption'])
+    pop_cap = deep_get(kwargs, ['dependencies', 'max_pop', 'selectedOption'])
     if pop_cap is not None:
         pop_cap = int(pop_cap)
     else:
@@ -61,7 +61,7 @@ def kill_vills_per_age(scenario: AoE2DEScenario, player: Player, **kwargs):
         )
         trigger.new_effect.send_chat(
             source_player=player.player_id,
-            message=f"R.I.P. Villager {i + 1}... You're housed btw!",
+            message=f"R.I.P. Villager {i + 1}...",
         )
 
 
