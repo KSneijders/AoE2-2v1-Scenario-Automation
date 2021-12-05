@@ -16,6 +16,7 @@ from src.civs import get_civ
 from src.data import colour_to_player_id
 from src.disable_structure import Disables
 from src.encoded_strings import base64_encoded
+from src.helper import set_allied_starting_tc_explored
 from src.local_config import folder_2v1, folder_de
 
 filename = f"arabia"
@@ -107,5 +108,6 @@ disables_object.combine_age_requirements(scenario)
 
 tm.import_triggers(disables_object.triggers)
 pm.set_diplomacy_teams(challengers, defendants)
+set_allied_starting_tc_explored(scenario, (challengers, defendants))
 
 scenario.write_to_file(f"{folder_de}!2v1-{filename}.aoe2scenario")
