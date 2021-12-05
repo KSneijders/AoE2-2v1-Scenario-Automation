@@ -12,19 +12,3 @@ base64_encoded = [
     eyJwbGF5ZXJzIjp7IjAiOnsibmFtZSI6IkFJIiwic2lkZSI6IkNoYWxsZW5nZXIiLCJpZCI6ImFpIiwiY29sb3VyIjoiQ3lhbiJ9LCIxIjp7Im5hbWUiOiJNcktpcmJ5Iiwic2lkZSI6IkRlZmVuZGFudCIsImlkIjoiZGVmYXVsdCIsImNvbG91ciI6IlB1cnBsZSJ9fSwibWFwcyI6eyIwIjoiYSIsIjEiOiJyIiwiMiI6ImEiLCIzIjoiYiIsIjQiOiJpIiwiNSI6ImEifSwicG9pbnRzIjp7fSwiY2l2cyI6eyJvcHRpb25zIjpbImJ5emFudGluZXMiLCJwZXJzaWFucyIsInNsYXZzIl0sImNob2ljZUluZGV4IjowfSwiY2hhbGxlbmdlcyI6eyJjb2xsZWN0aW9uIjpbXSwib3B0aW9ucyI6eyJvcHRpb25zIjpbXSwiY2hvaWNlSW5kZXgiOi0xfSwicXVhbnRpdHkiOjB9LCJjb21tYW5kcyI6eyJjb2xsZWN0aW9uIjpbeyJuYW1lIjoiQWxsIHBsYXllcnMgZGVsZXRlIGFsbCBtaWxpdGFyeSIsInBvaW50cyI6eyIxeCI6eyJjb3N0IjoxMCwicmVwZWF0IjoxfSwiMngiOnsiY29zdCI6MTQsInJlcGVhdCI6Mn19LCJpZCI6ImFsbF9wbGF5ZXJzX2RlbGV0ZV9hbGxfbWlsaXRhcnkiLCJzZWxlY3RlZE9wdGlvbiI6IjF4IiwibWF4UmVwZWF0IjoxfSx7Im5hbWUiOiJEZWxldGUgYWxsIGZsYWdnZWQgYnVpbGRpbmdzIiwicG9pbnRzIjo4LCJjbGFzc2VzIjpbImZldWRhbCsiXSwiaWQiOiJkZWxldGVfYWxsX2ZsYWdnZWRfYnVpbGRpbmdzIn0seyJuYW1lIjoiRGVsZXRlIGFsbCBob3VzZXMiLCJwb2ludHMiOnsiMXgiOnsiY29zdCI6NCwicmVwZWF0IjoxfSwiMngiOnsiY29zdCI6OCwicmVwZWF0IjoyfX0sImlkIjoiZGVsZXRlX2FsbF9ob3VzZXMiLCJzZWxlY3RlZE9wdGlvbiI6IjF4IiwibWF4UmVwZWF0IjoxfSx7Im5hbWUiOiJQaW5nIFRDcyIsInBvaW50cyI6eyIzeCI6eyJjb3N0IjoyLCJyZXBlYXQiOjN9fSwiZGVzYyI6IlJFTUVNQkVSIHRvIGNoYW5nZSBBTFQtVC4gWCBhbGwgVENzIHlvdSBoYXZlISIsImlkIjoicGluZ190YyIsInNlbGVjdGVkT3B0aW9uIjoiM3giLCJtYXhSZXBlYXQiOjN9XSwicXVhbnRpdHkiOjN9fQ==
     """
 ]
-
-# For easy copy, paste as empty list
-_copy_paste_empty_list = [
-    # ------------------------------------------------------------------------------------
-    """
-    
-    """,
-    # ------------------------------------------------------------------------------------
-    """
-    
-    """,
-    # ------------------------------------------------------------------------------------
-    """
-    
-    """
-]
