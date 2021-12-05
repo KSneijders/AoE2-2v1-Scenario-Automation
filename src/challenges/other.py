@@ -37,7 +37,7 @@ def kill_vills_per_age(scenario: AoE2DEScenario, player: Player, **kwargs):
         )
         trigger.new_effect.script_call(
             message="\n".join([
-                f"void p{player.player_id}Kill{percentage}Percent{age.capitalize()}AgeVills {{",
+                f"void p{player.player_id}Kill{percentage}Percent{age.capitalize()}AgeVills() {{",
                 f"    killP{player.player_id}Vills();",
                 f"}}"
             ])

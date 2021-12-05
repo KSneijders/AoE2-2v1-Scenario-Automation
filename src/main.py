@@ -59,6 +59,7 @@ for index, profile_settings in enumerate(decoded_profiles):
     player_object: Player = scenario.player_manager.players[randomized_id]
     player_object.color = ColorId.from_player_id(colour_id)
     player_object.human = True
+    player_object.allied_victory = True
     player_object.starting_age = StartingAge.DARK_AGE
     player_colour_map[randomized_id] = colour_id
 
