@@ -28,7 +28,7 @@ for p in pm.players:
     p.color = ColorId.GRAY
 
 randomized_player_ids = list(range(1, len(base64_encoded) + 1))
-# random.shuffle(randomized_player_ids)
+random.shuffle(randomized_player_ids)
 player_colour_map: bidict = bidict()
 """Maps Player ID to their colour"""
 
